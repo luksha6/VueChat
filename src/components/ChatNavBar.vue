@@ -11,7 +11,7 @@
 </template>
 
 <script>
-    import { mapState } from 'vuex'
+    import { mapState, mapActions, mapMutations } from 'vuex'
 
     export default {
         name: 'ChatNavBar',
@@ -20,6 +20,30 @@
                 'user',
             ])
         },
+        methods: {
+            ...mapActions([
+                'logout',
+                'login'
+            ]),
+            ...mapMutations([
+                'setReconnect'
+            ]),
+            onLogout() {
+                this.$router.push({ path: '/' });
+                this.logout();
+            },
+            unload() {
+                if(this.user.username) { // User hasn't logged out
+                    this.setReconnect(true);
+                }
+            }
+        },
+        mounted() {
+            window.addEventListener('beforeunload', this.unload);
+            if(this.reconnect) {
+                this.login(this.user.username);
+            }
+        }
     }
 </script>
 
